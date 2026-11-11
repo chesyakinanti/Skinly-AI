@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-plus-jakarta: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Brand Palette */
+  --color-primary-rose: #A4556B;
+  --color-soft-blush: #F3E3E7;
+  --color-warm-cream: #FCF8F6;
+  --color-deep-mauve: #64424D;
+  --color-sage-green: #A9B8A2;
+  --color-white: #FFFFFF;
+
+  /* Skin Type Categories */
+  --color-skin-normal: #A9B8A2;
+  --color-skin-dry: #A9BDCC;
+  --color-skin-oily: #D58B9B;
+  --color-skin-combo: #B7A7C9;
+  --color-skin-warning: #E8B77D;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-plus-jakarta);
+  background-color: var(--color-warm-cream);
+  color: var(--color-deep-mauve);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: var(--font-plus-jakarta);
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+  background-color: #FCF8F6;
+  color: #64424D;
+  background-image: 
+    radial-gradient(at 15% 15%, rgba(243, 227, 231, 0.45) 0px, transparent 50%),
+    radial-gradient(at 85% 80%, rgba(243, 227, 231, 0.4) 0px, transparent 55%),
+    radial-gradient(at 50% 50%, rgba(252, 248, 246, 1) 0px, transparent 100%);
+  background-attachment: fixed;
+}
+
+/* Typographic Hierarchy & Line Spacing */
+h1, .h1 {
+  font-family: var(--font-plus-jakarta);
+  font-weight: 800;
+  color: #64424D;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+h2, .h2 {
+  font-family: var(--font-plus-jakarta);
+  font-weight: 700;
+  color: #64424D;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+h3, .h3 {
+  font-family: var(--font-plus-jakarta);
+  font-weight: 700;
+  color: #64424D;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+h4, .h4 {
+  font-family: var(--font-plus-jakarta);
+  font-weight: 600;
+  color: #64424D;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+
+p {
+  line-height: 1.625;
+  letter-spacing: -0.011em;
+}
+
+/* Micro-copy, Badge, and Tag spacing */
+.tracking-badge {
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessible focus ring */
+*:focus-visible {
+  outline: 2px solid #A4556B;
+  outline-offset: 3px;
+}
+
+/* Ensure clickable elements have pointer cursor */
+button, a, summary, [role="button"], select, input[type="checkbox"], input[type="radio"] {
+  cursor: pointer;
+}
+
+button:disabled, input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Custom scrollbar for beauty-tech clean feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FCF8F6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E8D3D8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A4556B;
+}
+
+/* Fluid Page Transition */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,74 @@
+# ==========================================
+# Skinly AI - Official Next.js & Python .gitignore
+# ==========================================
+
+# --- Next.js Dependencies ---
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# --- Next.js Build Output ---
+/.next/
+/out/
+/build
+/dist
+.vercel
+*.tsbuildinfo
+
+# --- Next.js Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# --- Environment & Secret Variables ---
+.env*.local
+.env
+!.env.example
+
+# --- Python & FastAPI Backend ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
+# Python Virtual Environments
+.venv/
+*/.venv/
+venv/
+*/venv/
+ENV/
+env/
+
+# Python Testing & Caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Machine Learning Runs & Caches
+runs/
+*.log
+.cache/
+
+# --- Operating System & IDE ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# --- AI Scratch Directory ---
+scratch/
