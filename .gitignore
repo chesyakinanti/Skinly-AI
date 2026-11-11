@@ -72,3 +72,9 @@ Desktop.ini
 
 # --- AI Scratch Directory ---
 scratch/
+
+# RAG
+rag/chroma_db/
+rag/__pycache__/
+rag/.venv/
+rag/.env
