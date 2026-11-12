@@ -13,10 +13,10 @@ export interface ConfidenceBarProps {
 }
 
 const TYPE_COLORS: Record<SkinType, string> = {
-  Normal: '#A9B8A2',
-  Dry: '#A9BDCC',
-  Oily: '#D58B9B',
-  Combination: '#B7A7C9',
+  Normal: '#A9B8A2', // Sage Green (Official brand positive status)
+  Dry: '#9BB5C4', // Soft Slate
+  Oily: '#A4556B', // Rose Pink (Official brand primary)
+  Combination: '#8F475B', // Deep Rose / Mauve
 };
 
 export const ConfidenceBar: React.FC<ConfidenceBarProps> = ({
@@ -35,23 +35,23 @@ export const ConfidenceBar: React.FC<ConfidenceBarProps> = ({
     // Smooth animated entrance fill
     const timer = setTimeout(() => {
       setFillWidth(clampedPercentage);
-    }, 100);
+    }, 120);
     return () => clearTimeout(timer);
   }, [clampedPercentage]);
 
   return (
     <div className={`space-y-1.5 ${className}`}>
-      <div className="flex items-center justify-between text-xs sm:text-[13px] leading-tight">
+      <div className="flex items-center justify-between text-xs leading-tight">
         <span className="font-semibold text-[#64424D] tracking-tight">{label}</span>
         {showPercentageText && (
-          <span className="font-bold text-[#64424D] tabular-nums font-mono text-xs">
+          <span className="font-bold text-[#64424D]/75 tabular-nums font-mono text-xs">
             {clampedPercentage}%
           </span>
         )}
       </div>
 
       <div
-        className="w-full h-3 rounded-full bg-[#F3E3E7]/70 p-0.5 overflow-hidden shadow-inner"
+        className="w-full h-2 rounded-full bg-[#F3E3E7] border border-[#F3E3E7] overflow-hidden"
         role="progressbar"
         aria-valuenow={clampedPercentage}
         aria-valuemin={0}
@@ -59,15 +59,12 @@ export const ConfidenceBar: React.FC<ConfidenceBarProps> = ({
         aria-label={`Tingkat keyakinan ${label}: ${clampedPercentage}%`}
       >
         <div
-          className="h-full rounded-full transition-all duration-1000 ease-out relative"
+          className="h-full rounded-full transition-all duration-700 ease-out"
           style={{
             width: `${fillWidth}%`,
             backgroundColor: barColor,
           }}
-        >
-          {/* Subtle light glint on active bar */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" />
-        </div>
+        />
       </div>
     </div>
   );

@@ -100,19 +100,19 @@ export const CameraModal: React.FC<CameraModalProps> = ({
         setErrorMessage(
           language === 'id'
             ? 'Kamera tidak ditemukan pada perangkat Anda.'
-            : 'No camera hardware found on your device.'
+            : 'No camera device found on your device.'
         );
       } else {
         setErrorMessage(
           language === 'id'
-            ? `Gagal mengakses kamera: ${error.message}`
-            : `Failed to access camera: ${error.message}`
+            ? `Tidak dapat mengakses kamera: ${error.message}`
+            : `Unable to access camera: ${error.message}`
         );
       }
     }
   }, [facingMode, language, stopStream]);
 
-  // Start/stop camera when modal opens/closes
+  // Start camera when modal opens, stop when closed
   useEffect(() => {
     if (isOpen) {
       startCamera();
@@ -128,16 +128,16 @@ export const CameraModal: React.FC<CameraModalProps> = ({
     };
   }, [isOpen, startCamera, stopStream]);
 
-  // Switch camera facing mode
+  // Switch between front and rear cameras
   const handleSwitchCamera = () => {
     setFacingMode((prev) => (prev === 'user' ? 'environment' : 'user'));
   };
 
-  // Capture current video frame to canvas
+  // Capture current frame to canvas
   const handleCapture = () => {
     if (!videoRef.current) return;
-    const video = videoRef.current;
 
+    const video = videoRef.current;
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
@@ -145,7 +145,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Flip horizontally if front camera for natural selfie orientation
+    // Flip horizontally if front-facing camera
     if (facingMode === 'user') {
       ctx.translate(canvas.width, 0);
       ctx.scale(-1, 1);
@@ -196,9 +196,9 @@ export const CameraModal: React.FC<CameraModalProps> = ({
       aria-modal="true"
       aria-label="Camera Capture Modal"
     >
-      <div className="relative w-full max-w-xl rounded-3xl bg-[#FCF8F6] border border-[#F3E3E7] shadow-2xl overflow-hidden flex flex-col">
+      <div className="relative w-full max-w-xl rounded-2xl bg-white border border-[#F3E3E7] shadow-[0_20px_48px_-8px_rgba(100,66,77,0.18)] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-5 py-4 border-b border-[#F3E3E7] flex items-center justify-between bg-white/80">
+        <div className="px-5 py-3.5 border-b border-[#F3E3E7] flex items-center justify-between bg-white">
           <div className="flex items-center space-x-2 text-sm font-bold text-[#64424D]">
             <Camera className="w-4 h-4 text-[#A4556B]" aria-hidden="true" />
             <span>{language === 'id' ? 'Ambil Foto Wajah' : 'Capture Face Photo'}</span>
@@ -206,7 +206,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-full text-[#64424D]/60 hover:text-[#A4556B] hover:bg-[#F3E3E7] transition-colors"
+            className="p-1 rounded-xl text-[#64424D]/60 hover:text-[#A4556B] hover:bg-[#F3E3E7]/40 transition-colors"
             aria-label="Close camera"
           >
             <X className="w-5 h-5" />
@@ -217,7 +217,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
         <div className="relative aspect-[4/3] w-full bg-black overflow-hidden flex items-center justify-center">
           {errorMessage ? (
             <div className="p-6 text-center space-y-3 max-w-sm">
-              <AlertCircle className="w-10 h-10 text-[#D58B9B] mx-auto" />
+              <AlertCircle className="w-10 h-10 text-rose-400 mx-auto" />
               <p className="text-xs text-white/90 leading-relaxed">{errorMessage}</p>
               <button
                 type="button"
@@ -298,7 +298,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
                 <button
                   type="button"
                   onClick={handleRetake}
-                  className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-full bg-[#FCF8F6] border border-[#E2C3CB] text-xs font-semibold text-[#64424D] hover:bg-[#F3E3E7] transition-all"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-[#FCF8F6] border border-[#F3E3E7] text-xs font-semibold text-[#64424D] hover:bg-[#F3E3E7] transition-colors"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
                   <span>{language === 'id' ? 'Ulangi' : 'Retake'}</span>
@@ -306,7 +306,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
                 <button
                   type="button"
                   onClick={handleConfirm}
-                  className="inline-flex items-center space-x-1.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#A4556B] to-[#8F475B] text-xs font-bold text-white shadow-soft hover:shadow-card hover:scale-[1.02] active:scale-[0.98] transition-all"
+                  className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-[#A4556B] hover:bg-[#8F475B] text-xs font-semibold text-white shadow-soft active:scale-98 transition-all"
                 >
                   <Check className="w-4 h-4" />
                   <span>{language === 'id' ? 'Gunakan Foto Ini' : 'Confirm Photo'}</span>
@@ -317,7 +317,7 @@ export const CameraModal: React.FC<CameraModalProps> = ({
                 type="button"
                 onClick={handleCapture}
                 disabled={isInitializing || Boolean(errorMessage)}
-                className="inline-flex items-center space-x-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#A4556B] via-[#94465C] to-[#7D3B4E] text-xs font-bold text-white shadow-soft hover:shadow-card hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 transition-all"
+                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-[#A4556B] hover:bg-[#8F475B] text-xs font-semibold text-white shadow-soft active:scale-98 disabled:opacity-50 transition-all"
               >
                 <Sparkles className="w-4 h-4" />
                 <span>{language === 'id' ? 'Ambil Foto' : 'Capture Photo'}</span>

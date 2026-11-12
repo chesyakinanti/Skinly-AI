@@ -1,7 +1,32 @@
 import { ChatMessage } from '@/types';
 import { getIngredients } from '@/data/knowledgeData';
 import { getSkinTypeDetail } from '@/data/skinTypesInfo';
-import { askRagBackend } from './ragApiClient';
+async function askRagBackend(
+  apiUrl: string,
+  question: string,
+  lang: 'id' | 'en' = 'id',
+  skinType?: string | null
+): Promise<AssistantAnswer> {
+  const response = await fetch(apiUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      query: question,
+      language: lang,
+      skin_type: skinType,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`RAG API returned ${response.status}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return {
+    content: data.answer || data.content || data.response || '',
+    references: data.references || data.sources || [],
+  };
+}
 
 // true  = kalau backend RAG gagal, pakai jawaban lokal (hardcode).
 // false = kalau backend RAG gagal, lempar error supaya page menampilkan pesan error.
