@@ -4,7 +4,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage } from '@/components/assistant/ChatMessage';
 import { ChatInput } from '@/components/assistant/ChatInput';
 import { Card } from '@/components/common/Card';
-import { Button } from '@/components/common/Button';
 import {
   Sparkles,
   RotateCcw,
@@ -19,7 +18,8 @@ export default function AssistantPage() {
 
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
 
   // Initialize or update welcome message when language changes
   useEffect(() => {
@@ -39,12 +39,23 @@ export default function AssistantPage() {
     ]);
   }, [language, t.assistant.welcomeMsg, t.assistant.justNow]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  // Scroll ONLY the internal chat container, NEVER the window or page
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior,
+      });
+    }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // Avoid scrolling on initial page load so page doesn't shift
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    scrollToBottom('smooth');
   }, [messages, isLoading]);
 
   const handleSendMessage = async (text: string) => {
@@ -96,6 +107,9 @@ export default function AssistantPage() {
         timestamp: t.assistant.justNow,
       },
     ]);
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const isConfigured = ragAssistantService.isConfigured();
@@ -117,7 +131,7 @@ export default function AssistantPage() {
           </p>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2.5">
           {/* Backend Status Badge */}
           <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E2C3CB] text-[11px] font-medium text-[#64424D] shadow-xs">
             <Database className="w-3.5 h-3.5 text-[#A4556B]" aria-hidden="true" />
@@ -126,22 +140,25 @@ export default function AssistantPage() {
             </span>
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
+          {/* Reset Conversation Button: Distinct, Prominent Button */}
+          <button
+            type="button"
             onClick={handleReset}
-            leftIcon={<RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />}
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-white hover:bg-[#F3E3E7] text-[#64424D] hover:text-[#A4556B] border border-[#E2C3CB] hover:border-[#A4556B] text-xs font-semibold shadow-xs hover:shadow-soft active:scale-95 transition-all duration-200 cursor-pointer group"
             aria-label={t.assistant.resetChat}
+            title={t.assistant.resetChat}
           >
-            {t.assistant.resetChat}
-          </Button>
+            <RotateCcw className="w-3.5 h-3.5 text-[#A4556B] transition-transform duration-300 group-hover:-rotate-90" aria-hidden="true" />
+            <span>{t.assistant.resetChat}</span>
+          </button>
         </div>
       </div>
 
       {/* Chat Messages Container */}
       <Card className="min-h-[460px] max-h-[600px] flex flex-col justify-between p-4 sm:p-6 shadow-card border border-[#F3E3E7] bg-white">
-        {/* Messages List Area */}
+        {/* Messages List Area - scroll happens ONLY inside this container */}
         <div
+          ref={chatContainerRef}
           className="flex-1 overflow-y-auto space-y-4 pr-1 sm:pr-2 mb-4 scrollbar-thin"
           role="log"
           aria-live="polite"
@@ -165,8 +182,6 @@ export default function AssistantPage() {
               </span>
             </div>
           )}
-
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Chat Input & Suggested Questions */}
