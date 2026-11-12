@@ -421,12 +421,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
       justNow: 'Baru saja',
       errorMsg: 'Maaf, terjadi kendala saat memproses jawaban. Silakan coba ulangi pertanyaan Anda.',
       suggestedQuestions: [
-        'Apa fungsi Niacinamide?',
-        'Apa perbedaan AHA dan BHA?',
         'Bagaimana cara merawat kulit kering?',
         'Apakah Hyaluronic Acid cocok untuk kulit berminyak?',
-        'Bagaimana aturan pakai Retinol yang aman?',
-        'Apa peran Ceramide untuk skin barrier?',
+        'Rutinitas pagi untuk kulit berminyak',
+        'Bagaimana cara mengetahui tipe kulit?',
+        'Kapan harus ke dokter kulit?',
       ],
     },
     knowledge: {

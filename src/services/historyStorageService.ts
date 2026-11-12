@@ -1,4 +1,4 @@
-import { HistoryRecord } from '@/types';
+import { HistoryRecord, SkinType } from '@/types';
 
 const STORAGE_KEY = 'skinly_ai_analysis_history_v1';
 const MAX_RECORDS = 20;
@@ -17,12 +17,17 @@ export const historyStorageService = {
     }
   },
 
+  /** Tipe kulit dari analisis terbaru (riwayat disimpan terbaru di depan), atau null. */
+  getLatestSkinType(): SkinType | null {
+    const latest = this.getHistory().find((item) => item.predictedSkinType);
+    return latest?.predictedSkinType ?? null;
+  },
+
   addRecord(record: Omit<HistoryRecord, 'id' | 'createdAt' | 'formattedDate'>): HistoryRecord | null {
     if (typeof window === 'undefined') return null;
     try {
       const current = this.getHistory();
       const now = new Date();
-      
       const newRecord: HistoryRecord = {
         ...record,
         id: `scan_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
