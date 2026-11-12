@@ -140,12 +140,32 @@ def pertanyaan_medis(pertanyaan):
     p = pertanyaan.lower()
     return any(k in p for k in KATA_MEDIS)
 
+def chunk_dokter():
+    """Ambil bagian 'Kapan Perlu ke Dokter' sebagai sumber untuk jawaban medis."""
+    hasil = koleksi.get(where={"bagian": "Kapan Perlu ke Dokter"})
+    daftar = []
+    for i in range(len(hasil["ids"])):
+        meta = hasil["metadatas"][i]
+        daftar.append({
+            "id": hasil["ids"][i],
+            "jarak": 0.0,
+            "bagian": meta["bagian"],
+            "sub": meta["sub"],
+            "sumber": meta["sumber"],
+            "teks": hasil["documents"][i],
+        })
+    return daftar
+
+
+def nomor_dikutip(teks):
+    """Ambil nomor sumber yang benar-benar ditulis di jawaban: (Sumber 1, Sumber 3) -> {1, 3}."""
+    return {int(n) for n in re.findall(r"Sumber (\d+)", teks)}
 
 def jawab(pertanyaan, tipe_kulit=None, acne_prone=None):
     # Jalur aman: pertanyaan medis dijawab dengan kalimat tetap, tanpa LLM.
     if pertanyaan_medis(pertanyaan):
-        return JAWABAN_MEDIS, cari_chunk(pertanyaan, tipe_kulit)
-
+        return JAWABAN_MEDIS, chunk_dokter()
+    
     chunks = cari_chunk(pertanyaan, tipe_kulit)
     if not chunks:
         return KALIMAT_TOLAK, []
@@ -188,19 +208,26 @@ def tanya(pertanyaan, tipe_kulit=None, acne_prone=None):
         tipe_kulit = None
 
     jawaban, chunks = jawab(pertanyaan, tipe_kulit, acne_prone)
+
+    # Tampilkan hanya sumber yang benar-benar dikutip di jawaban (bila ada yang valid).
+    dikutip = {n for n in nomor_dikutip(jawaban) if 1 <= n <= len(chunks)}
+
+    sumber = []
+    for n, c in enumerate(chunks, start=1):
+        if dikutip and n not in dikutip:
+            continue
+        sumber.append({
+            "nomor": n,
+            "bagian": c["bagian"],
+            "sub": c["sub"],
+            "sumber": c["sumber"],
+            "jarak": round(c["jarak"], 3),
+        })
+
     return {
         "jawaban": jawaban,
         "cukup_informasi": len(chunks) > 0,
-        "sumber": [
-            {
-                "nomor": n,
-                "bagian": c["bagian"],
-                "sub": c["sub"],
-                "sumber": c["sumber"],
-                "jarak": round(c["jarak"], 3),
-            }
-            for n, c in enumerate(chunks, start=1)
-        ],
+        "sumber": sumber,
     }
 
 
